@@ -51,23 +51,23 @@ def _get_table():
     return dynamodb.Table(DYNAMODB_TABLE_NAME)
 
 
-def save_messages_to_db(client, conversation_id, messages):
+def save_messages_to_db(client, conversation_id, messages, user_id):
     table = _get_table()
     # put item
     response = table.put_item(
-        Item={"uuid": conversation_id, "messages": json.dumps(messages)}
+        Item={
+            "uuid": conversation_id,
+            "user": user_id,
+            "messages": json.dumps(messages),
+        }
     )
 
     return response
 
 
-def load_messages_from_db(conversation_id):
+def load_messages_from_db(conversation_id, user):
     table = _get_table()
 
-    response = table.get_item(
-        Key={
-            "uuid": conversation_id,
-        }
-    )
+    response = table.get_item(Key={"uuid": conversation_id, "user": user})
 
     return json.loads(response["Item"]["messages"])

@@ -38,6 +38,7 @@ async def on_message(message):
         # create a private channel and invite the user there, and itself
         ## get the guild
         conversation_id = str(uuid4())
+        user = str(message.author.id)
         channel = await create_private_channel(
             client, f"{conversation_id}-learning", message
         )
@@ -53,14 +54,15 @@ async def on_message(message):
         messages = get_initial_message(initial_prompt)
 
         ## save the message history
-        response = save_messages_to_db(client, conversation_id, messages)
+        response = save_messages_to_db(client, conversation_id, messages, user)
 
     if message.channel.name.endswith("-learning") and message.author != client.user:
         # get the conversation id
         conversation_id = "-".join(message.channel.name.split("-")[:-1])
+        user = str(message.author.id)
 
         # load the messages from db
-        messages = load_messages_from_db(conversation_id)
+        messages = load_messages_from_db(conversation_id, user)
 
         # append the user message
         messages.append(create_messages("user", message.content))
@@ -73,7 +75,7 @@ async def on_message(message):
 
         # save the messages to db
         messages.append(create_messages("assistant", extracted_ai_msg))
-        save_messages_to_db(client, conversation_id, messages)
+        save_messages_to_db(client, conversation_id, messages, user)
 
 
 client.run(config("BOT_TOKEN"))
