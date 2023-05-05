@@ -38,7 +38,9 @@ async def on_message(message):
         # create a private channel and invite the user there, and itself
         ## get the guild
         conversation_id = str(uuid4())
-        channel = await create_private_channel(client, f"{conversation_id}-learning")
+        channel = await create_private_channel(
+            client, f"{conversation_id}-learning", message
+        )
 
         await channel.send(content=f"Hi, <@{message.author.id}>")
 

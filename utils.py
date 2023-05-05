@@ -14,7 +14,7 @@ def save_messages(messages):
             f.write(f">> {message['role'.capitalize()]}: {message['content']}\n\n")
 
 
-async def create_private_channel(client, channel_name):
+async def create_private_channel(client, channel_name, message):
     for g in client.guilds:
         if g.name == config("GUILD_NAME"):
             guild = g
@@ -24,6 +24,9 @@ async def create_private_channel(client, channel_name):
     overwrites = {
         guild.default_role: discord.PermissionOverwrite(read_messages=False),
         guild.me: discord.PermissionOverwrite(read_messages=True),
+        message.author: discord.PermissionOverwrite(
+            read_messages=True, send_messages=True, manage_channels=True
+        ),
     }
     channel = await guild.create_text_channel(channel_name, overwrites=overwrites)
 
