@@ -57,6 +57,9 @@ async def on_message(message):
         response = save_messages_to_db(client, conversation_id, messages, user)
 
     if message.channel.name.endswith("-learning") and message.author != client.user:
+        # send recognition of user message acceptance and display loading
+        ai_response = await message.channel.send("[Loading AI response...]")
+
         # get the conversation id
         conversation_id = "-".join(message.channel.name.split("-")[:-1])
         user = str(message.author.id)
@@ -71,7 +74,7 @@ async def on_message(message):
         extracted_ai_msg = get_ai_response(messages)["choices"][0]["message"]["content"]
 
         # send the AI's response to the user
-        await message.channel.send(extracted_ai_msg)
+        await ai_response.edit(content=extracted_ai_msg)
 
         # save the messages to db
         messages.append(create_messages("assistant", extracted_ai_msg))
