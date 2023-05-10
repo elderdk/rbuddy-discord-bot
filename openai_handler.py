@@ -6,6 +6,9 @@ from typing import Dict, List
 from message_templates import first_ai_prompt
 
 
+openai.api_type = "azure"
+openai.api_base = "https://riiid-openai-playground.openai.azure.com/"
+openai.api_version = "2023-03-15-preview"
 openai.api_key = config("OPENAI_API_KEY")
 
 
@@ -23,7 +26,7 @@ def create_messages(role: str, messages: str) -> Dict:
 
 def get_ai_response(messages: str):
     response = openai.ChatCompletion.create(
-        model="gpt-4",
+        model=config("GPT-MODEL"),
         messages=messages,
     )
     return response
