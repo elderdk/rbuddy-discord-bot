@@ -26,7 +26,7 @@ def create_messages(role: str, messages: str) -> Dict:
 
 def get_ai_response(messages: str):
     response = openai.ChatCompletion.create(
-        model=config("GPT-MODEL"),
+        engine="openai-gpt-4",
         messages=messages,
     )
     return response
