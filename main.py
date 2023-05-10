@@ -2,10 +2,10 @@ import discord
 
 # from discord_components import DiscordComponents, Button
 from decouple import config
+from message_templates import welcome_message, first_ai_prompt, ai_loading_message
 from datetime import datetime
 from openai_handler import get_initial_message, create_messages, get_ai_response
 from utils import (
-    save_messages,
     create_private_channel,
     save_messages_to_db,
     load_messages_from_db,
@@ -15,7 +15,7 @@ from uuid import uuid4
 
 
 intents = discord.Intents.default()
-intents.members = True
+# intents.members = True
 intents.message_content = True
 
 client = discord.Client(intents=intents)
@@ -31,6 +31,10 @@ async def on_message(message):
     if message.author == client.user:
         return
 
+    if message.content == "!write_welcome":
+        channel = await client.fetch_channel(1105669596498903120)
+        await channel.send(welcome_message)
+
     if message.content == "!start":
         # create a private channel and invite the user there, and itself
         ## get the guild
@@ -40,7 +44,10 @@ async def on_message(message):
             client, f"{conversation_id}-learning", message
         )
 
-        await channel.send(content=f"Hi, <@{message.author.id}>")
+        await channel.send(content=f"Hi, <@{message.author.id}>, {first_ai_prompt}")
+
+        # delete !start message
+        await message.delete()
 
         ## get the initial prompt
         prompt_storage = client.get_channel(config("PROMPT_STORAGE_CHANNEL", cast=int))
@@ -55,7 +62,7 @@ async def on_message(message):
 
     if message.channel.name.endswith("-learning") and message.author != client.user:
         # send recognition of user message acceptance and display loading
-        ai_response = await message.channel.send("[Loading AI response...]")
+        ai_response = await message.channel.send(ai_loading_message)
 
         # get the conversation id
         conversation_id = "-".join(message.channel.name.split("-")[:-1])
