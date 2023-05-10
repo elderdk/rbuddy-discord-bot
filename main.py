@@ -1,4 +1,6 @@
 import discord
+
+# from discord_components import DiscordComponents, Button
 from decouple import config
 from datetime import datetime
 from openai_handler import get_initial_message, create_messages, get_ai_response
@@ -13,6 +15,7 @@ from uuid import uuid4
 
 
 intents = discord.Intents.default()
+intents.members = True
 intents.message_content = True
 
 client = discord.Client(intents=intents)
@@ -28,13 +31,7 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith("$hello"):
-        await message.channel.send("Hello!")
-
-    if message.content == "$dev":
-        pass
-
-    if message.content == "$start":
+    if message.content == "!start":
         # create a private channel and invite the user there, and itself
         ## get the guild
         conversation_id = str(uuid4())
