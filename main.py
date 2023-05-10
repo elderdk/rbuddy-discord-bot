@@ -21,6 +21,37 @@ intents.message_content = True
 client = discord.Client(intents=intents)
 
 
+### buttons test
+content_msg = {
+    "content": "This is a message with components",
+    "components": [
+        {
+            "type": 1,
+            "components": [
+                {"type": 2, "label": "Click me!", "style": 1, "custom_id": "click_one"}
+            ],
+        }
+    ],
+}
+
+
+class ViewWithButton(discord.ui.View):
+    @discord.ui.button(style=discord.ButtonStyle.blurple, label="hey_r_buddy")
+    async def button_one(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        print("Hey R.buddy")
+
+    @discord.ui.button(style=discord.ButtonStyle.blurple, label="learn_more")
+    async def button_two(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        print("Button2 clicked")
+
+
+### / buttons
+
+
 @client.event
 async def on_ready():
     print(f"We have logged in as {client.user}")
@@ -33,7 +64,7 @@ async def on_message(message):
 
     if message.content == "!write_welcome":
         channel = await client.fetch_channel(1105669596498903120)
-        await channel.send(welcome_message)
+        await channel.send("hello", view=ViewWithButton())
 
     if message.content == "!start":
         # create a private channel and invite the user there, and itself
