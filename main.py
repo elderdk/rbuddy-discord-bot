@@ -14,9 +14,15 @@ intents.message_content = True
 client = discord.Client(intents=intents)
 
 
+async def write_welcome_message(client):
+    channel = await client.fetch_channel(config("WELCOME_PAGE_ID"))
+    await channel.send(welcome_message, view=ViewWithButton(timeout=None))
+
+
 @client.event
 async def on_ready():
     print(f"We have logged in as {client.user}")
+    await write_welcome_message(client)
 
 
 @client.event
@@ -25,8 +31,7 @@ async def on_message(message):
         return
 
     if message.content == "!write_welcome":
-        channel = await client.fetch_channel(config("WELCOME_PAGE_ID"))
-        await channel.send(welcome_message, view=ViewWithButton(timeout=None))
+        await write_welcome_message(client)
 
     if message.channel.name.endswith("-learning") and message.author != client.user:
         await process_user_message(message)
