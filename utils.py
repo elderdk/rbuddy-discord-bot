@@ -14,17 +14,13 @@ def save_messages(messages):
             f.write(f">> {message['role'.capitalize()]}: {message['content']}\n\n")
 
 
-async def create_private_channel(client, channel_name, message):
-    for g in client.guilds:
-        if g.name == config("GUILD_NAME"):
-            guild = g
-
+async def create_private_channel(guild, channel_name, user):
     ## create a private channel
 
     overwrites = {
         guild.default_role: discord.PermissionOverwrite(read_messages=False),
         guild.me: discord.PermissionOverwrite(read_messages=True),
-        message.author: discord.PermissionOverwrite(
+        user: discord.PermissionOverwrite(
             read_messages=True, send_messages=True, manage_channels=True
         ),
     }
@@ -51,7 +47,7 @@ def _get_table():
     return dynamodb.Table(DYNAMODB_TABLE_NAME)
 
 
-def save_messages_to_db(client, conversation_id, messages, user_id):
+def save_messages_to_db(conversation_id, messages, user_id):
     table = _get_table()
     # put item
     response = table.put_item(
