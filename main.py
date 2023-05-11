@@ -25,8 +25,8 @@ async def on_message(message):
         return
 
     if message.content == "!write_welcome":
-        channel = await client.fetch_channel(1105669596498903120)
-        await channel.send(welcome_message, view=ViewWithButton())
+        channel = await client.fetch_channel(config("WELCOME_PAGE_ID"))
+        await channel.send(welcome_message, view=ViewWithButton(timeout=None))
 
     if message.channel.name.endswith("-learning") and message.author != client.user:
         await process_user_message(message)
