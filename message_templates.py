@@ -15,5 +15,5 @@ Let's start by determining which level of Reading practice questions you would l
 """
 
 ai_loading_message = """
-:fire: Hey, hold up! R.buddy's just around the corner! :fire:
+Okay! Give me a moment...
 """
