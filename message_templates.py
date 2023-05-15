@@ -5,7 +5,7 @@ welcome_message = """
 
 2. Your chats with R.buddy will vanish into thin air after 24 hours 🕒. If there's anything super important you wanna keep, make sure to copy and save it separately before it goes *poof*! ✨
 
-3. Wanna dig deeper into R.buddy? Hit "`Learn more about R.buddy`" button and uncover all the cool stuff it can do for you!
+3. Wanna dig deeper into R.buddy? Visit `discover-rbuddys-powers` channel and discover all the cool stuff it can do for you!
 
 4. Got questions? Hit up <@1098126636228038660>. We're always here to help 🤗.
 """

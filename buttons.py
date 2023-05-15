@@ -8,11 +8,3 @@ class ViewWithButton(discord.ui.View):
         self, button: discord.ui.Button, interaction: discord.Interaction
     ):
         await start_convo(button)
-
-    @discord.ui.button(
-        style=discord.ButtonStyle.blurple, label="Learn more about R.buddy"
-    )
-    async def button_two(
-        self, button: discord.ui.Button, interaction: discord.Interaction
-    ):
-        print("Button2 clicked")
