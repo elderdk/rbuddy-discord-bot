@@ -16,6 +16,11 @@ client = discord.Client(intents=intents)
 
 async def write_welcome_message(client):
     channel = await client.fetch_channel(config("WELCOME_PAGE_ID"))
+
+    # delete all previous messages in the channel
+    await channel.purge(limit=1000)
+
+    # load the new welcome page
     await channel.send(welcome_message, view=ViewWithButton(timeout=None))
 
 
