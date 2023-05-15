@@ -11,7 +11,7 @@ welcome_message = """
 """
 
 first_ai_prompt = """
-Let's start by determining which level of Reading practice questions you would like to begin with. Would you like an easy or a difficult-level passage?
+Let's start by determining which level of Reading practice questions you would like to begin with. If you want an easy passage, type "1". If you want a difficult passage, type "2"?
 """
 
 ai_loading_message = """
