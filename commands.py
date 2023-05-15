@@ -50,13 +50,24 @@ async def process_user_message(message):
     messages.append(create_messages("user", message.content))
 
     # Call openai api and get AI reponse
-    msg = get_ai_response(messages)
-    print(msg)
-    extracted_ai_msg = get_ai_response(messages)["choices"][0]["message"]["content"]
+
+    try:
+        # Get the response
+        temp_response = get_ai_response(messages)
+        finish_reason = temp_response["choices"][0]["finish_reason"]
+
+        # Flag an error if the finish reason is abnormal, i.e. nt "stop"
+        if finish_reason != "stop":
+            response = f"Something went wrong... The AI finished with the following reason: `{finish_reason}.` Please flag the admin! Sorry for the inconvenience. We'll try to fix it ASAP!"
+        else:
+            response = temp_response["choices"][0]["message"]["content"]
+
+    except Exception as e:
+        response = f"Sorry! Something went wrong. You can go back to the welcome page and try clicking the \"R Buddy\" button again. If it still doesn't work, please flag the admin! It's probably fine but here's the error message.: {e}"
 
     # send the AI's response to the user
-    await ai_response.edit(content=extracted_ai_msg)
+    await ai_response.edit(content=response)
 
     # save the messages to db
-    messages.append(create_messages("assistant", extracted_ai_msg))
+    messages.append(create_messages("assistant", response))
     save_messages_to_db(conversation_id, messages, user)
