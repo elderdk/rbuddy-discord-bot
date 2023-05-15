@@ -50,6 +50,8 @@ async def process_user_message(message):
     messages.append(create_messages("user", message.content))
 
     # Call openai api and get AI reponse
+    msg = get_ai_response(messages)
+    print(msg)
     extracted_ai_msg = get_ai_response(messages)["choices"][0]["message"]["content"]
 
     # send the AI's response to the user
