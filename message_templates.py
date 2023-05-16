@@ -11,7 +11,7 @@ welcome_message = """
 """
 
 first_ai_prompt = """
-Let's start by determining which level of Reading practice questions you would like to begin with. If you want an easy passage, type "1". If you want a difficult passage, type "2"?
+Hello, this is R.buddy, your study buddy to help you with the SAT! Curious about what R.buddy does or just want to get started?
 """
 
 ai_loading_message = """
