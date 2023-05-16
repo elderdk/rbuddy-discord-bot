@@ -5,6 +5,7 @@ from decouple import config
 from commands import process_user_message
 from message_templates import welcome_message
 from buttons import ViewWithButton
+from utils import save_conversation
 
 
 intents = discord.Intents.default()
@@ -35,8 +36,25 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content == "!write_welcome":
+    con = message.content
+
+    if con == "!write_welcome":
         await write_welcome_message(client)
+
+    if con.startswith("!save"):
+        if con == "!save_all":
+            learning_channels = [
+                learning_chanel
+                for learning_chanel in await message.guild.fetch_channels()
+                if learning_chanel.name.endswith("-learning")
+            ]
+            for channel in learning_channels:
+                await save_conversation(client, channel.id)
+        else:
+            channel_id = con.split(" ")[1]  # e.g. !save 123123123123123
+            await save_conversation(
+                client, channel_id
+            )  # iterate all channels and save them one-by-one
 
     if message.channel.name.endswith("-learning") and message.author != client.user:
         await process_user_message(message)

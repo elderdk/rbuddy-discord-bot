@@ -1,5 +1,10 @@
 from uuid import uuid4
-from utils import create_private_channel, save_messages_to_db, load_messages_from_db
+from utils import (
+    create_private_channel,
+    save_messages_to_db,
+    load_messages_from_db,
+    get_conversation_id,
+)
 from openai_handler import get_initial_message, get_ai_response, create_messages
 from message_templates import ai_loading_message
 import requests
@@ -40,7 +45,7 @@ async def process_user_message(message):
     ai_response = await message.channel.send(ai_loading_message)
 
     # get the conversation id
-    conversation_id = "-".join(message.channel.name.split("-")[:-1])
+    conversation_id = get_conversation_id(message.channel)
     user = str(message.author.id)
 
     # load the messages from db

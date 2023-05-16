@@ -5,13 +5,20 @@ import json
 import boto3
 
 
-def save_messages(messages):
+def save_messages(messages, fname):
+    BASE_DIR = "/tmp"
+    fname = BASE_DIR + f"/{fname}"
     with open(
-        f"{int(datetime.today().timestamp())}_{message.author.id}_conversation.txt",
+        fname,
         mode="w",
     ) as f:
-        for message in messages[1:]:
-            f.write(f">> {message['role'.capitalize()]}: {message['content']}\n\n")
+        for message in messages:
+            f.write("*" * 64)
+            f.write("\n")
+            f.write(f"{message['role'].capitalize()}:\n\n")
+            f.write(f"{message['content']}\n\n")
+
+    return fname
 
 
 async def create_private_channel(guild, channel_name, user):
@@ -67,3 +74,32 @@ def load_messages_from_db(conversation_id, user):
     response = table.get_item(Key={"uuid": conversation_id, "user": user})
 
     return json.loads(response["Item"]["messages"])
+
+
+def get_conversation_id(channel):
+    return "-".join(channel.name.split("-")[:-1])
+
+
+async def save_conversation(client, channel_id):
+    channel = await client.fetch_channel(channel_id)
+    conversation_id = get_conversation_id(channel)
+
+    # find the id of the user who had the converstaion with the bot
+    # by going through the last 10 messages, aggregate the ids and get rid of the bot id
+    conversation_user = [
+        msg.author.id
+        async for msg in channel.history(limit=10)
+        if msg.author.id != 1106096307933814817
+    ]  # 1106096307933814817 is the bot id.
+
+    messages = load_messages_from_db(conversation_id, str(conversation_user[0]))
+
+    user_name = await client.fetch_user(f"{conversation_user[0]}")
+    created_at = datetime.strftime(channel.created_at, "%Y%m%d")
+
+    fname = f"{user_name.name}-{created_at}-{conversation_id}.txt"
+    saved_fname = save_messages(messages, fname)
+
+    conv_dump_channel = await client.fetch_channel(1107963834012008488)
+
+    await conv_dump_channel.send(file=discord.File(saved_fname))
